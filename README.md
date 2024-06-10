@@ -14,36 +14,34 @@ To run this program, you can use Remix, an online Solidity IDE. To get started, 
 Once you are on the Remix website, create a new file by clicking on the "+" icon in the left-hand sidebar. Save the file with a .sol extension (e.g., MyToken.sol). Copy and paste the following code into the file:
 
 ```javascript
-pragma solidity 0.8.18;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.13;
 
-contract MyToken {
-    string public token_Name = "PandaPunks";
-    string public token_Abbreviation = "PPNKS";
-    uint public total_Supply = 0;
+contract Error_Handling
+{
+    
+    uint public balance = 0;
 
-    function mint(address recipient, uint256 amount) public {
-        require(msg.sender == owner, "Only the owner can mint tokens.");
-
-        total_Supply += amount;
-        _mint(recipient, amount);
+    //Cannot withdraw more than we have as balance
+    function withdraw(uint amount) public   {
+        require(balance > amount, "Not enough balance to withdraw!");
+        balance -= amount;
     }
 
-    function burn(uint256 amount) public {
-        require(balanceOf(msg.sender) >= amount, "Insufficient balance to burn.");
-
-        total_Supply -= amount;
-        _burn(msg.sender, amount);
-    }
-
-    function assert_func() public {
-        assert(total_Supply >= 0);
-    }
-
-    function revert_func() public {
-        if (total_Supply <= 0) {
-            revert("Total supply must be greater than zero.");
+    //Cannot deposit if balance results in value greater than 500
+    function deposit(uint amount) public   {
+        balance += amount;
+        if (balance > 500) {
+            revert("Your balance is exceeding the limit!");
         }
     }
+
+    //Checks if the balance is equals to zero
+    function isempty() public view returns (string memory){
+        assert(balance == 0);
+        return "Sorry! You have no money for the transaction.";
+    }
+
 }
 
 ```
